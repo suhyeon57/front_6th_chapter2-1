@@ -39,15 +39,6 @@ const product_five = 'p5';
 
 // 메인 함수 - 앱 초기화 및 UI 생성
 function main() {
-  // 지역 변수 선언
-  const gridContainer = document.createElement('div');
-  const leftColumn = document.createElement('div');
-  const selectorContainer = document.createElement('div');
-  const rightColumn = document.createElement('div');
-  const manualToggle = document.createElement('button');
-  const manualOverlay = document.createElement('div');
-  const manualColumn = document.createElement('div');
-
   // 전역 변수 초기화
   CartState.reset();
 
@@ -67,11 +58,14 @@ function main() {
   const selector = document.createElement('select');
   selector.id = 'product-select';
 
+  // 그리드 레이아웃 관련 요소들
+  const gridContainer = document.createElement('div');
+  const leftColumn = document.createElement('div');
+  const rightColumn = document.createElement('div');
+  const selectorContainer = document.createElement('div');
+
   // 그리드 컨테이너 및 컬럼 생성
-  //gridContainer = document.createElement('div');
-  // leftColumn = document.createElement('div');
   leftColumn['className'] = 'bg-white border border-gray-200 p-8 overflow-y-auto';
-  //selectorContainer = document.createElement('div');
   selectorContainer.className = 'mb-6 pb-6 border-b border-gray-200';
   selector.className = 'w-full p-3 border border-gray-300 rounded-lg text-base mb-3';
   gridContainer.className = 'grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 flex-1 overflow-hidden';
@@ -98,7 +92,6 @@ function main() {
   cartDisp.id = 'cart-items';
 
   // 우측 컬럼 (주문 요약) 생성
-  //const rightColumn = document.createElement('div');
   rightColumn.className = 'bg-black text-white p-8 flex flex-col';
   rightColumn.innerHTML = `
     <h2 class="text-xs font-medium mb-5 tracking-extra-wide uppercase">Order Summary</h2>
@@ -131,6 +124,10 @@ function main() {
   `;
 
   // 매뉴얼 토글 버튼 생성
+  const manualToggle = document.createElement('button');
+  const manualOverlay = document.createElement('div');
+  const manualColumn = document.createElement('div');
+
   manualToggle.onclick = function () {
     manualOverlay.classList.toggle('hidden');
     manualColumn.classList.toggle('translate-x-full');
@@ -359,7 +356,6 @@ function handleCalculateCartStuff() {
   // CartState 초기화
   CartState.updateTotalAmount(0);
   CartState.updateItemCount(0);
-  //originalTotal = 0;
 
   // 장바구니 아이템들 가져오기
   const cartDisp = document.getElementById('cart-items');
@@ -558,7 +554,6 @@ function handleCalculateCartStuff() {
   }
 
   // 할인 정보 섹션 업데이트
-  //discountInfoDiv = document.getElementById('discount-info');
   discountInfoDiv.innerHTML = '';
   if (discRate > 0 && CartState.totalAmt > 0) {
     savedAmount = originalTotal - CartState.totalAmt;
