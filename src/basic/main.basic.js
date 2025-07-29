@@ -10,7 +10,7 @@ const product_one = 'p1';
 const product_two = 'p2';
 const product_three = 'p3';
 const product_four = 'p4';
-const product_five = 'p5';
+const product_five = `p5`;
 
 let cartDisp;
 function main() {
@@ -385,7 +385,6 @@ function handleCalculateCartStuff() {
         if (curItem.id === product_one) {
           disc = 10 / 100;
         } else {
-          ㄴ;
           if (curItem.id === product_two) {
             disc = 15 / 100;
           } else {
