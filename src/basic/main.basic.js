@@ -6,11 +6,12 @@ let lastSel;
 let sel;
 let addBtn;
 let totalAmt = 0;
-const PRODUCT_ONE = 'p1';
-const p2 = 'p2';
-const product_3 = 'p3';
-const p4 = 'p4';
-const PRODUCT_5 = `p5`;
+const product_one = 'p1';
+const product_two = 'p2';
+const product_three = 'p3';
+const product_four = 'p4';
+const product_five = 'p5';
+
 let cartDisp;
 function main() {
   var root;
@@ -28,7 +29,7 @@ function main() {
   lastSel = null;
   prodList = [
     {
-      id: PRODUCT_ONE,
+      id: product_one,
       name: '버그 없애는 키보드',
       val: 10000,
       originalVal: 10000,
@@ -36,9 +37,17 @@ function main() {
       onSale: false,
       suggestSale: false,
     },
-    { id: p2, name: '생산성 폭발 마우스', val: 20000, originalVal: 20000, q: 30, onSale: false, suggestSale: false },
     {
-      id: product_3,
+      id: product_two,
+      name: '생산성 폭발 마우스',
+      val: 20000,
+      originalVal: 20000,
+      q: 30,
+      onSale: false,
+      suggestSale: false,
+    },
+    {
+      id: product_three,
       name: '거북목 탈출 모니터암',
       val: 30000,
       originalVal: 30000,
@@ -47,7 +56,7 @@ function main() {
       suggestSale: false,
     },
     {
-      id: p4,
+      id: product_four,
       name: '에러 방지 노트북 파우치',
       val: 15000,
       originalVal: 15000,
@@ -56,7 +65,7 @@ function main() {
       suggestSale: false,
     },
     {
-      id: PRODUCT_5,
+      id: product_five,
       name: `코딩할 때 듣는 Lo-Fi 스피커`,
       val: 25000,
       originalVal: 25000,
@@ -373,19 +382,20 @@ function handleCalculateCartStuff() {
         }
       });
       if (q >= 10) {
-        if (curItem.id === PRODUCT_ONE) {
+        if (curItem.id === product_one) {
           disc = 10 / 100;
         } else {
-          if (curItem.id === p2) {
+          ㄴ;
+          if (curItem.id === product_two) {
             disc = 15 / 100;
           } else {
-            if (curItem.id === product_3) {
+            if (curItem.id === product_three) {
               disc = 20 / 100;
             } else {
-              if (curItem.id === p4) {
+              if (curItem.id === product_four) {
                 disc = 5 / 100;
               } else {
-                if (curItem.id === PRODUCT_5) {
+                if (curItem.id === product_five) {
                   disc = 25 / 100;
                 }
               }
@@ -574,11 +584,11 @@ var doRenderBonusPoints = function () {
       }
     }
     if (!product) continue;
-    if (product.id === PRODUCT_ONE) {
+    if (product.id === product_one) {
       hasKeyboard = true;
-    } else if (product.id === p2) {
+    } else if (product.id === product_two) {
       hasMouse = true;
-    } else if (product.id === product_3) {
+    } else if (product.id === product_three) {
       hasMonitorArm = true;
     }
   }
