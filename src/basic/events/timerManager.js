@@ -1,3 +1,5 @@
+import { TIMER_CONFIG, DISCOUNT_RATES, UI_TEXT } from '../utils/constants.js';
+
 // 타이머 ID 저장 객체
 const timers = {
   flashSaleTimeout: null,
@@ -12,29 +14,29 @@ function startAllTimers(products, callbacks) {
   startSuggestSaleTimer(products, callbacks);
 }
 
-// 번개세일 타이머 시작
+// 번개세일 타이머 시작 - 상수 적용
 function startFlashSaleTimer(products, callbacks) {
-  const lightningDelay = Math.random() * 10000;
+  const lightningDelay = Math.random() * TIMER_CONFIG.MAX_FLASH_DELAY;
 
   timers.flashSaleTimeout = setTimeout(() => {
     timers.flashSaleInterval = setInterval(() => {
       triggerFlashSale(products, callbacks);
-    }, 30000);
+    }, TIMER_CONFIG.FLASH_SALE_INTERVAL);
   }, lightningDelay);
 }
 
-// 추천 상품 타이머 시작
+// 추천 상품 타이머 시작 - 상수 적용
 function startSuggestSaleTimer(products, callbacks) {
-  const suggestDelay = Math.random() * 20000;
+  const suggestDelay = Math.random() * TIMER_CONFIG.MAX_SUGGEST_DELAY;
 
   timers.suggestSaleTimeout = setTimeout(() => {
     timers.suggestSaleInterval = setInterval(() => {
       triggerSuggestSale(products, callbacks);
-    }, 60000);
+    }, TIMER_CONFIG.SUGGEST_SALE_INTERVAL);
   }, suggestDelay);
 }
 
-// 번개세일 실행
+// 번개세일 실행 - 상수 적용
 function triggerFlashSale(products, callbacks) {
   const availableProducts = products.filter((product) => product.q > 0 && !product.onSale);
 
@@ -43,16 +45,16 @@ function triggerFlashSale(products, callbacks) {
   const luckyIdx = Math.floor(Math.random() * availableProducts.length);
   const luckyItem = availableProducts[luckyIdx];
 
-  luckyItem.val = Math.round((luckyItem.originalVal * 80) / 100);
+  luckyItem.val = Math.round(luckyItem.originalVal * (1 - DISCOUNT_RATES.FLASH_SALE_RATE));
   luckyItem.onSale = true;
 
-  alert('⚡번개세일! ' + luckyItem.name + '이(가) 20% 할인 중입니다!');
+  alert(UI_TEXT.FLASH_SALE_ALERT(luckyItem.name));
 
   callbacks.onUpdateSelectOptions();
   callbacks.onUpdatePrices();
 }
 
-// 추천 세일 실행
+// 추천 세일 실행 - 상수 적용
 function triggerSuggestSale(products, callbacks) {
   const cartDisp = document.getElementById('cart-items');
   if (cartDisp.children.length === 0) return;
@@ -63,9 +65,9 @@ function triggerSuggestSale(products, callbacks) {
   const suggestProduct = findSuggestProduct(products, lastSelected);
   if (!suggestProduct) return;
 
-  alert('💝 ' + suggestProduct.name + '은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!');
+  alert(UI_TEXT.SUGGEST_SALE_ALERT(suggestProduct.name));
 
-  suggestProduct.val = Math.round((suggestProduct.val * 95) / 100);
+  suggestProduct.val = Math.round(suggestProduct.val * (1 - DISCOUNT_RATES.SUGGEST_SALE_RATE));
   suggestProduct.suggestSale = true;
 
   callbacks.onUpdateSelectOptions();

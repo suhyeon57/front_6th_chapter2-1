@@ -1,19 +1,19 @@
 // 데이터 임포트
 import { products } from '../data/products.js';
-import { createHeaderHTML } from './templates/header.js';
-import { createMainGridHTML } from './mainGrid.js';
-import { createManualButtonHTML, createManualOverlayHTML, setupManualEvents } from './templates/manual.js';
-import {
-  calculateCart,
-  calculateBonusPoints,
-  generateStockMessage,
-  calculateTotalStock,
-} from './services/calculator.js';
-import { updateCartItemPrices } from './services/updatePrices.js';
-import { setupAllEvents, removeAllEvents } from './events/eventSetup.js';
+import { removeAllEvents, setupAllEvents } from './events/eventSetup.js';
 import { startAllTimers, stopAllTimers } from './events/timerManager.js';
+import { createMainGridHTML } from './mainGrid.js';
+import {
+  calculateBonusPoints,
+  calculateCart,
+  calculateTotalStock,
+  generateStockMessage,
+} from './services/calculator.js';
 import { updateAllUI } from './services/uiUpdateService.js';
-
+import { updateCartItemPrices } from './services/updatePrices.js';
+import { createHeaderHTML } from './templates/header.js';
+import { createManualButtonHTML, createManualOverlayHTML, setupManualEvents } from './templates/manual.js';
+import { STOCK_CONFIG, UI_TEXT, CSS_CLASSES } from './utils/constants.js';
 // 장바구니 상태 관리 객체
 const CartState = {
   itemCnt: 0,
@@ -96,8 +96,8 @@ function onUpdateSelectOptions() {
   // 제품별 옵션 생성
   products.map(createProductOption).forEach((option) => selector.appendChild(option));
 
-  // 재고 부족 시 시각적 표시
-  selector.style.borderColor = totalStock < 50 ? 'orange' : '';
+  // 재고 부족 시 시각적 표시 - 상수 사용
+  selector.style.borderColor = totalStock < STOCK_CONFIG.WARNING_STOCK_THRESHOLD ? 'orange' : '';
 }
 
 // 상품 옵션 생성
@@ -115,43 +115,42 @@ function createProductOption(item) {
   return option;
 }
 
-// 품절 상품 설정
+// 품절 상품 설정 - 상수 적용
 function getOutOfStockConfig(item) {
   return {
-    text: `${item.name} - ${item.val}원 (품절)${getDiscountFlags(item)}`,
-    className: 'text-gray-400',
+    text: UI_TEXT.OUT_OF_STOCK(item.name, item.val, getDiscountFlags(item)),
+    className: CSS_CLASSES.DISCOUNT.OUT_OF_STOCK,
     disabled: true,
   };
 }
 
-//재고 있는 상품 설정
 function getInStockConfig(item) {
   const discountMap = new Map([
     [
       'both',
       {
-        text: `⚡💝${item.name} - ${item.originalVal}원 → ${item.val}원 (25% SUPER SALE!)`,
-        className: 'text-purple-600 font-bold',
+        text: UI_TEXT.SUPER_SALE(item.name, item.originalVal, item.val),
+        className: CSS_CLASSES.DISCOUNT.SUPER_SALE,
       },
     ],
     [
       'onSale',
       {
-        text: `⚡${item.name} - ${item.originalVal}원 → ${item.val}원 (20% SALE!)`,
-        className: 'text-red-500 font-bold',
+        text: UI_TEXT.FLASH_SALE(item.name, item.originalVal, item.val),
+        className: CSS_CLASSES.DISCOUNT.FLASH_SALE,
       },
     ],
     [
       'suggestSale',
       {
-        text: `💝${item.name} - ${item.originalVal}원 → ${item.val}원 (5% 추천할인!)`,
-        className: 'text-blue-500 font-bold',
+        text: UI_TEXT.SUGGEST_SALE(item.name, item.originalVal, item.val),
+        className: CSS_CLASSES.DISCOUNT.SUGGEST_SALE,
       },
     ],
     [
       'normal',
       {
-        text: `${item.name} - ${item.val}원${getDiscountFlags(item)}`,
+        text: UI_TEXT.NORMAL_PRICE(item.name, item.val, getDiscountFlags(item)),
         className: null,
       },
     ],
@@ -163,9 +162,9 @@ function getInStockConfig(item) {
   return discountMap.get(type);
 }
 
-// 할인 플래그 생성
+/// 할인 플래그 생성 - 상수 적용
 function getDiscountFlags(item) {
-  const flags = [item.onSale && '⚡SALE', item.suggestSale && '💝추천'].filter(Boolean);
+  const flags = [item.onSale && UI_TEXT.SALE_FLAG, item.suggestSale && UI_TEXT.SUGGEST_FLAG].filter(Boolean);
 
   return flags.length > 0 ? ' ' + flags.join(' ') : '';
 }
@@ -230,13 +229,13 @@ function onGetStockTotal() {
   return calculateTotalStock(products);
 }
 
-// 재고 정보 업데이트 함수 - 리팩토링된 버전
+// 재고 정보 업데이트 함수 - 상수 적용
 const handleStockInfoUpdate = function () {
   const totalStock = onGetStockTotal();
   const infoMsg = generateStockMessage(products);
 
-  // 재고 부족 시 처리 (30개 미만)
-  if (totalStock < 30) {
+  // 재고 부족 시 처리 - 상수 사용
+  if (totalStock < STOCK_CONFIG.CRITICAL_STOCK_THRESHOLD) {
     //console.log('전체 재고가 30개 미만입니다.');
   }
 

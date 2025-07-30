@@ -1,4 +1,5 @@
 import { generateStockMessage, calculateTotalStock, calculateBonusPoints } from './calculator.js';
+import { UI_TEXT, STOCK_CONFIG } from '../utils/constants.js';
 
 // 메인 UI 업데이트 함수
 function updateAllUI(cartItems, calculations, cartState, products) {
@@ -45,9 +46,9 @@ function updateBonusPoints(cartItems, products, cartState) {
 
 // === 개별 UI 업데이트 함수들 ===
 
-// 아이템 수량 표시 업데이트
+// 아이템 수량 표시 업데이트 - 상수 적용
 function updateItemCountDisplay(itemCount) {
-  document.getElementById('item-count').textContent = `🛍️ ${itemCount} items in cart`;
+  document.getElementById('item-count').textContent = UI_TEXT.CART_ITEM_COUNT(itemCount);
 }
 
 // 장바구니 총액 표시 업데이트
@@ -188,14 +189,13 @@ function updateStockInfo(products) {
   const stockInfo = document.getElementById('stock-status');
   stockInfo.textContent = stockMsg;
 }
-
-// 재고 정보 상세 업데이트
+// 재고 정보 상세 업데이트 - 상수 적용
 function handleStockInfoUpdate(products) {
   const totalStock = calculateTotalStock(products);
   const infoMsg = generateStockMessage(products);
 
-  // 재고 부족 시 처리 (30개 미만)
-  if (totalStock < 30) {
+  // 재고 부족 시 처리 - 상수 사용
+  if (totalStock < STOCK_CONFIG.CRITICAL_STOCK_THRESHOLD) {
     //console.log('전체 재고가 30개 미만입니다.');
   }
 
@@ -218,7 +218,7 @@ function applyVisualEffects(cartItems) {
   }
 }
 
-// 보너스 포인트 렌더링
+// 보너스 포인트 렌더링 - 상수 적용
 function renderBonusPoints(cartItems, products, cartState) {
   const cartDisp = document.getElementById('cart-items');
   if (cartDisp.children.length === 0) {
@@ -232,12 +232,12 @@ function renderBonusPoints(cartItems, products, cartState) {
   if (ptsTag) {
     if (pointsResult.points > 0) {
       ptsTag.innerHTML = `
-        <div>적립 포인트: <span class="font-bold">${pointsResult.points}p</span></div>
+        <div>${UI_TEXT.POINTS_DISPLAY(pointsResult.points).replace(': ', ': <span class="font-bold">').replace('p', 'p</span>')}</div>
         <div class="text-2xs opacity-70 mt-1">${pointsResult.detail.join(', ')}</div>
       `;
       ptsTag.style.display = 'block';
     } else {
-      ptsTag.textContent = '적립 포인트: 0p';
+      ptsTag.textContent = UI_TEXT.POINTS_DISPLAY(0);
       ptsTag.style.display = 'block';
     }
   }
