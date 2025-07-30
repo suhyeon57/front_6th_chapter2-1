@@ -1,3 +1,5 @@
+/* 상수를 정의함으로써 코드의 가독성과 유지보수성을 높임 */
+
 // 상품 ID 상수
 export const PRODUCT_IDS = {
   KEYBOARD: 'p1',
