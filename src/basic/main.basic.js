@@ -1,47 +1,15 @@
 // 데이터 임포트
 import { products } from '../data/products.js';
+import { CartState } from './services/cartStateService.js';
 import { removeAllEvents, setupAllEvents } from './events/eventSetup.js';
 import { startAllTimers, stopAllTimers } from './events/timerManager.js';
 import { createMainGridHTML } from './mainGrid.js';
-import {
-  calculateBonusPoints,
-  calculateCart,
-  calculateTotalStock,
-  generateStockMessage,
-} from './services/calculator.js';
+import { calculateCart } from './services/calculator.js';
 import { updateAllUI } from './services/uiUpdateService.js';
 import { updateCartItemPrices } from './services/updatePrices.js';
 import { createHeaderHTML } from './templates/header.js';
 import { createManualButtonHTML, createManualOverlayHTML, setupManualEvents } from './templates/manual.js';
 import { STOCK_CONFIG, UI_TEXT, CSS_CLASSES } from './utils/constants.js';
-// 장바구니 상태 관리 객체
-const CartState = {
-  itemCnt: 0,
-  lastSelected: null,
-  totalAmt: 0,
-
-  // 상태 초기화
-  reset() {
-    this.itemCnt = 0;
-    this.lastSelected = null;
-    this.totalAmt = 0;
-  },
-
-  // 아이템 수량 업데이트
-  updateItemCount(count) {
-    this.itemCnt = count;
-  },
-
-  // 마지막 선택 상품 업데이트
-  updateLastSelected(productId) {
-    this.lastSelected = productId;
-  },
-
-  // 총액 업데이트
-  updateTotalAmount(amount) {
-    this.totalAmt = amount;
-  },
-};
 
 // 메인 함수 - 앱 초기화 및 UI 생성
 function main() {
@@ -188,60 +156,7 @@ function handleCalculateCartStuff() {
 
   // 모든 UI 업데이트를 한 번에 처리
   updateAllUI(cartItems, calculations, CartState, products);
-
-  // 하위 함수들 호출
-  handleStockInfoUpdate();
-  doRenderBonusPoints();
 }
-
-// 보너스 포인트 렌더링 함수 - 리팩토링된 버전
-const doRenderBonusPoints = function () {
-  const cartDisp = document.getElementById('cart-items');
-  if (cartDisp.children.length === 0) {
-    document.getElementById('loyalty-points').style.display = 'none';
-    return;
-  }
-
-  // 계산 로직 분리
-  const pointsResult = calculateBonusPoints(cartDisp.children, products, CartState.itemCnt, CartState.totalAmt);
-
-  // UI 업데이트
-  const ptsTag = document.getElementById('loyalty-points');
-  if (ptsTag) {
-    if (pointsResult.points > 0) {
-      ptsTag.innerHTML =
-        '<div>적립 포인트: <span class="font-bold">' +
-        pointsResult.points +
-        'p</span></div>' +
-        '<div class="text-2xs opacity-70 mt-1">' +
-        pointsResult.detail.join(', ') +
-        '</div>';
-      ptsTag.style.display = 'block';
-    } else {
-      ptsTag.textContent = '적립 포인트: 0p';
-      ptsTag.style.display = 'block';
-    }
-  }
-};
-
-// 전체 재고 계산 함수 - 리팩토링된 버전
-function onGetStockTotal() {
-  return calculateTotalStock(products);
-}
-
-// 재고 정보 업데이트 함수 - 상수 적용
-const handleStockInfoUpdate = function () {
-  const totalStock = onGetStockTotal();
-  const infoMsg = generateStockMessage(products);
-
-  // 재고 부족 시 처리 - 상수 사용
-  if (totalStock < STOCK_CONFIG.CRITICAL_STOCK_THRESHOLD) {
-    //console.log('전체 재고가 30개 미만입니다.');
-  }
-
-  const stockInfo = document.getElementById('stock-status');
-  stockInfo.textContent = infoMsg;
-};
 
 // 장바구니 내 상품 가격 업데이트 함수 - 할인 상태 변경 시 호출
 function doUpdatePricesInCart() {
