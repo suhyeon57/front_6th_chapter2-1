@@ -1,8 +1,8 @@
-import { products } from '../data/products.js';
+import { products } from './data/products.js';
 import { CartState } from './services/cartStateService.js';
 import { removeAllEvents, setupAllEvents } from './events/eventSetup.js';
 import { startAllTimers, stopAllTimers } from './events/timerManager.js';
-import { createMainGridHTML } from './mainGrid.js';
+import { createMainGridHTML } from './templates/mainGrid.js';
 import { calculateCart } from './services/calculator.js';
 import { updateAllUI } from './services/uiUpdateService.js';
 import { updateCartItemPrices } from './services/updatePrices.js';

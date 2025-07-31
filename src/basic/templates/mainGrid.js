@@ -1,5 +1,5 @@
-import { createLeftColumnHTML } from './templates/leftColumn.js';
-import { createRightColumnHTML } from './templates/rightColumn.js';
+import { createLeftColumnHTML } from './leftColumn.js';
+import { createRightColumnHTML } from './rightColumn.js';
 
 // 메인 그리드 레이아웃 템플릿
 export function createMainGridHTML() {
