@@ -1,45 +1,44 @@
 import React, { useState } from 'react';
 import { PRODUCTS } from '../../lib/products';
 
+// 상수 정의 (바닐라 JS의 constants와 동일)
+const STOCK_CONFIG = {
+  LOW_STOCK_THRESHOLD: 5,
+};
+
 interface ProductPickerProps {
   onAddItem: (productId: string) => void;
 }
 
 const ProductPicker: React.FC<ProductPickerProps> = ({ onAddItem }) => {
-  // 버그 없애는 키보드의 ID를 직접 설정 (products.js 확인 후)
-  const [selectedProductId, setSelectedProductId] = useState<string>('p1'); // p1이 버그 없애는 키보드라고 가정
+  // 버그 없애는 키보드의 ID를 직접 설정
+  const [selectedProductId, setSelectedProductId] = useState<string>('p1');
 
   const handleAddToCart = () => {
     if (selectedProductId) {
       onAddItem(selectedProductId);
-      // 추가 후 다시 기본값으로 설정
-      setSelectedProductId('p1');
+      // 선택 유지 (초기화하지 않음)
     }
   };
 
-  // 품절 상품들 필터링
-  const outOfStockProducts = PRODUCTS.filter((product) => product.quantity === 0);
+  // 재고 메시지 생성 - 바닐라 JS 로직 정확히 복제
+  const generateStockMessage = (): string => {
+    let stockMsg = '';
 
-  // 재고 부족 상품들 (5개 이하)
-  const lowStockProducts = PRODUCTS.filter((product) => product.quantity > 0 && product.quantity <= 5);
+    for (let i = 0; i < PRODUCTS.length; i++) {
+      const item = PRODUCTS[i];
 
-  // 재고 상태 메시지 생성
-  const getStockStatusMessage = (): string => {
-    const messages: string[] = []; // 타입 명시적 선언
-
-    if (outOfStockProducts.length > 0) {
-      outOfStockProducts.forEach((product) => {
-        messages.push(`${product.name}: 품절`);
-      });
+      // item.q 대신 item.quantity 사용 (React 버전에서는 quantity 필드)
+      if (item.quantity < STOCK_CONFIG.LOW_STOCK_THRESHOLD) {
+        if (item.quantity > 0) {
+          stockMsg += item.name + ': 재고 부족 (' + item.quantity + '개 남음)\n';
+        } else {
+          stockMsg += item.name + ': 품절\n';
+        }
+      }
     }
 
-    if (lowStockProducts.length > 0) {
-      lowStockProducts.forEach((product) => {
-        messages.push(`${product.name}: 재고 부족 (${product.quantity}개 남음)`);
-      });
-    }
-
-    return messages.join('\n');
+    return stockMsg;
   };
 
   return (
@@ -74,7 +73,7 @@ const ProductPicker: React.FC<ProductPickerProps> = ({ onAddItem }) => {
       </button>
 
       <div id="stock-status" className="text-xs text-red-500 mt-3 whitespace-pre-line">
-        {getStockStatusMessage()}
+        {generateStockMessage()}
       </div>
     </div>
   );

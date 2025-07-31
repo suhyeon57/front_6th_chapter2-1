@@ -1,19 +1,6 @@
 import React from 'react';
 import ProductPicker from './ProductPicker';
 
-interface CartItem {
-  id: string;
-  quantity: number;
-}
-
-interface CartState {
-  items: CartItem[];
-  totalAmount: number;
-  itemCount: number;
-  lastSelected: string | null;
-}
-
-// Props 타입 정의
 interface Product {
   id: string;
   name: string;
@@ -23,6 +10,13 @@ interface Product {
   onSale: boolean;
   suggestSale: boolean;
   discountRate: number;
+}
+
+interface CartState {
+  items: Array<{ id: string; quantity: number }>;
+  totalAmount: number;
+  itemCount: number;
+  lastSelected: string | null;
 }
 
 interface ShoppingCartProps {
@@ -44,28 +38,23 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
   const cartItemsWithProduct = cartState.items
     .map((item) => {
       const product = products.find((p) => p.id === item.id);
-      return {
-        ...item,
-        product: product!,
-      };
+      return product ? { ...item, product } : null;
     })
-    .filter((item) => item.product); // product가 없는 경우 제외
+    .filter((item): item is NonNullable<typeof item> => item !== null);
 
   return (
     <div className="bg-white border border-gray-200 p-8 overflow-y-auto">
-      {/* 상품 선택기 */}
-      <ProductPicker products={products} onAddItem={onAddItem} />
+      {/* ProductPicker 컴포넌트 사용 */}
+      <ProductPicker onAddItem={onAddItem} />
 
       {/* 장바구니 아이템들 */}
       <div id="cart-items">
         {cartItemsWithProduct.length === 0 ? (
-          // 빈 장바구니 상태
           <div className="text-center py-12 text-gray-500">
             <p className="text-lg mb-2">장바구니가 비어있습니다</p>
             <p className="text-sm">상품을 선택해주세요</p>
           </div>
         ) : (
-          // 장바구니 아이템들 렌더링
           cartItemsWithProduct.map(({ id, quantity, product }) => (
             <div
               key={id}
@@ -104,7 +93,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
                   <button
                     onClick={() => onUpdateQuantity(id, quantity + 1)}
                     className="quantity-change w-6 h-6 border border-black bg-white text-sm flex items-center justify-center transition-all hover:bg-black hover:text-white"
-                    disabled={quantity >= product.quantity} // 재고 제한
+                    disabled={quantity >= product.quantity}
                   >
                     +
                   </button>
@@ -118,13 +107,11 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
               <div className="text-right">
                 <div className="text-lg mb-2 tracking-tight tabular-nums">
                   {product.onSale ? (
-                    // 할인가 표시
                     <>
                       <span className="line-through text-gray-400">₩{(product.price * quantity).toLocaleString()}</span>{' '}
                       <span className="text-purple-600">₩{(product.discountPrice * quantity).toLocaleString()}</span>
                     </>
                   ) : (
-                    // 정가 표시
                     <span className="text-black">₩{(product.price * quantity).toLocaleString()}</span>
                   )}
                 </div>
@@ -148,16 +135,6 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
           ))
         )}
       </div>
-
-      {/* 장바구니 요약 */}
-      {cartItemsWithProduct.length > 0 && (
-        <div className="mt-6 pt-6 border-t border-gray-200">
-          <div className="flex justify-between items-center text-sm text-gray-600 mb-2">
-            <span>총 {cartState.itemCount}개 상품</span>
-            <span>₩{cartState.totalAmount.toLocaleString()}</span>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
