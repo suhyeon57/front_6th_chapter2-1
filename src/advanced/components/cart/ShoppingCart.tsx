@@ -50,10 +50,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
       {/* 장바구니 아이템들 */}
       <div id="cart-items">
         {cartItemsWithProduct.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
-            <p className="text-lg mb-2">장바구니가 비어있습니다</p>
-            <p className="text-sm">상품을 선택해주세요</p>
-          </div>
+          <div className="text-center py-12 text-gray-500"></div>
         ) : (
           cartItemsWithProduct.map(({ id, quantity, product }) => (
             <div
