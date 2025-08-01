@@ -85,7 +85,7 @@ interface OrderSummaryProps {
   calculations: Calculations;
 }
 
-const OrderSummary: React.FC<OrderSummaryProps> = ({ cartState, cartItemsWithProduct, calculations }) => {
+const OrderSummary: React.FC<OrderSummaryProps> = ({ cartItemsWithProduct }) => {
   // 정확한 장바구니 계산 (바닐라 JS 로직 복제)
   const calculateCartAccurate = () => {
     let subtotal = 0;

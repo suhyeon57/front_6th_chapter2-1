@@ -17,9 +17,12 @@ const App = () => {
   // 계산 Hook 추가 (할인, 총액 등)
   const calculations = useCalculations(cartState.items);
 
+  // 총 아이템 수 계산
+  const totalItemCount = cartState.items.reduce((total, item) => total + item.quantity, 0);
+
   return (
     <>
-      <Header />
+      <Header itemCount={totalItemCount} />
       <GuideToggle />
       <Layout>
         <ShoppingCart

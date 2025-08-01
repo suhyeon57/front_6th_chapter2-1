@@ -45,8 +45,10 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
   return (
     <div className="bg-white border border-gray-200 p-8 overflow-y-auto">
       {/* ProductPicker 컴포넌트 사용 */}
-      <ProductPicker onAddItem={onAddItem} />
-
+      <ProductPicker
+        onAddItem={onAddItem}
+        cartState={cartState} // 장바구니 상태 전달
+      />
       {/* 장바구니 아이템들 */}
       <div id="cart-items">
         {cartItemsWithProduct.length === 0 ? (
@@ -96,8 +98,8 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
                   </button>
                 </div>
 
-                {/* 재고 부족 경고 */}
-                {quantity >= product.quantity && <p className="text-xs text-red-500 mt-1">재고 부족</p>}
+                {/* 재고 부족 경고
+                {quantity >= product.quantity && <p className="text-xs text-red-500 mt-1">재고 부족</p>} */}
               </div>
 
               {/* 가격 및 삭제 버튼 */}
